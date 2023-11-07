@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "schedule")
 @Data
+@Table(name = "schedule")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Schedule {
@@ -18,11 +18,14 @@ public class Schedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private LocalDateTime shiftStartedTime;
+
+    @Column(nullable = false)
+    private LocalDateTime shiftEndedTime;
+
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
-
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
 
 }
