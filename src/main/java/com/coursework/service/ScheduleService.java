@@ -1,12 +1,18 @@
 package com.coursework.service;
 
 import com.coursework.model.Schedule;
+import com.coursework.repository.ScheduleRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ScheduleService {
+
+    private final ScheduleRepository scheduleRepositorytory;
+
     public List<Schedule> getAllSchedules() {
         return null;
     }

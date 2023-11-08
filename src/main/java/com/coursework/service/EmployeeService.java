@@ -1,12 +1,17 @@
 package com.coursework.service;
 
 import com.coursework.model.Employee;
+import com.coursework.repository.EmployeeRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class EmployeeService {
+
+    private final EmployeeRepository employeeRepository;
 
     public List<Employee> getAllEmployees() {
         return null;
