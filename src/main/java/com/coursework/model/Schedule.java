@@ -24,6 +24,8 @@ public class Schedule {
     @Column(nullable = false)
     private LocalDateTime shiftEndedTime;
 
+    private String workLocation;
+
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;

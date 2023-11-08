@@ -1,7 +1,9 @@
 package com.coursework.controller;
 
 import com.coursework.model.Schedule;
+import com.coursework.model.ScheduleDto;
 import com.coursework.service.ScheduleService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.*;
@@ -15,28 +17,34 @@ public class ScheduleController {
 
     private final ScheduleService scheduleService;
 
-    @GetMapping
+    @Operation(summary = "Get all schedules")
+    @GetMapping("/")
     public List<Schedule> getAllSchedules() {
         return scheduleService.getAllSchedules();
     }
 
-    @GetMapping("/{id}")
-    public Schedule getScheduleById(@PathVariable Long id) {
-        return scheduleService.getScheduleById(id);
+    @Operation(summary = "Get schedules by employee ID")
+    @GetMapping("/{employeeId}")
+    public List<Schedule> getAllSchedulesByEmployeeId(@PathVariable Long employeeId) {
+        return scheduleService.getAllSchedulesByEmployeeId(employeeId);
     }
 
-    @PostMapping
-    public Schedule addSchedule(@ParameterObject Schedule schedule) {
-        return scheduleService.addSchedule(schedule);
+    @Operation(summary = "Add a new schedule")
+    @PostMapping("/")
+    public Schedule addSchedule(@ParameterObject ScheduleDto scheduleDto) {
+        return scheduleService.addSchedule(scheduleDto);
     }
 
+    @Operation(summary = "Update a schedule")
     @PutMapping("/{id}")
-    public Schedule updateSchedule(@PathVariable Long id, @ParameterObject Schedule schedule) {
-        return scheduleService.updateSchedule(id, schedule);
+    public Schedule updateSchedule(@PathVariable Long id, @ParameterObject ScheduleDto scheduleDto) {
+        return scheduleService.updateSchedule(id, scheduleDto);
     }
 
+    @Operation(summary = "Delete a schedule")
     @DeleteMapping("/{id}")
     public void deleteSchedule(@PathVariable Long id) {
         scheduleService.deleteSchedule(id);
     }
 }
+
