@@ -1,5 +1,6 @@
 package com.coursework.service;
 
+import com.coursework.exception.ScheduleNotFoundException;
 import com.coursework.model.Schedule;
 import com.coursework.model.ScheduleDto;
 import com.coursework.repository.ScheduleRepository;
@@ -40,7 +41,7 @@ public class ScheduleService {
         Optional<Schedule> existingSchedule = scheduleRepository.findById(id);
 
         if (existingSchedule.isEmpty()) {
-            throw new RuntimeException(); // TODO:
+            throw new ScheduleNotFoundException("Schedule not found for id: " + id);
         }
 
         Schedule schedule = new Schedule(

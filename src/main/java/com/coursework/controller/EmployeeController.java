@@ -4,6 +4,7 @@ import com.coursework.model.Employee;
 import com.coursework.model.EmployeeDto;
 import com.coursework.service.EmployeeService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.*;
@@ -29,15 +30,21 @@ public class EmployeeController {
         return employeeService.getEmployeeById(id);
     }
 
+    @Operation(summary = "Get employee by Email")
+    @GetMapping("/emails/{email}")
+    public Employee getEmployeeByEmail(@PathVariable String email) {
+        return employeeService.getEmployeeByEmail(email);
+    }
+
     @Operation(summary = "Add a new employee")
     @PostMapping("/")
-    public Employee addEmployee(@ParameterObject EmployeeDto employeeDto) {
+    public Employee addEmployee(@Valid @ParameterObject EmployeeDto employeeDto) {
         return employeeService.addEmployee(employeeDto);
     }
 
     @Operation(summary = "Update a employee")
     @PutMapping("/{id}")
-    public Employee updateEmployee(@PathVariable Long id, @ParameterObject EmployeeDto employeeDto) {
+    public Employee updateEmployee(@PathVariable Long id, @Valid @ParameterObject EmployeeDto employeeDto) {
         return employeeService.updateEmployee(id, employeeDto);
     }
 

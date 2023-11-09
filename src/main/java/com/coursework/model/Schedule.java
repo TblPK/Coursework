@@ -24,6 +24,7 @@ public class Schedule {
     @Column(nullable = false)
     private LocalDateTime shiftEndedTime;
 
+    @Column(nullable = false)
     private String workLocation;
 
     @ManyToOne
