@@ -1,7 +1,8 @@
 package com.coursework.controller;
 
+import com.coursework.dto.EmployeeDto;
+import com.coursework.mapper.EmployeeMapper;
 import com.coursework.model.Employee;
-import com.coursework.model.EmployeeDto;
 import com.coursework.service.EmployeeService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -17,6 +18,7 @@ import java.util.List;
 public class EmployeeController {
 
     private final EmployeeService employeeService;
+    private final EmployeeMapper employeeMapper;
 
     @Operation(summary = "Get all employees")
     @GetMapping("/")
@@ -39,13 +41,15 @@ public class EmployeeController {
     @Operation(summary = "Add a new employee")
     @PostMapping("/")
     public Employee addEmployee(@Valid @ParameterObject EmployeeDto employeeDto) {
-        return employeeService.addEmployee(employeeDto);
+        Employee employee = employeeMapper.toEntity(employeeDto);
+        return employeeService.addEmployee(employee);
     }
 
     @Operation(summary = "Update a employee")
     @PutMapping("/{id}")
     public Employee updateEmployee(@PathVariable Long id, @Valid @ParameterObject EmployeeDto employeeDto) {
-        return employeeService.updateEmployee(id, employeeDto);
+        Employee employee = employeeMapper.toEntity(employeeDto);
+        return employeeService.updateEmployee(id, employee);
     }
 
     @Operation(summary = "Delete a employee")
@@ -53,4 +57,5 @@ public class EmployeeController {
     public void deleteEmployee(@PathVariable Long id) {
         employeeService.deleteEmployee(id);
     }
+
 }

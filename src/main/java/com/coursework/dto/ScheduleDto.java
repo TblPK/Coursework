@@ -1,4 +1,4 @@
-package com.coursework.model;
+package com.coursework.dto;
 
 import com.coursework.exception.InvalidShiftTimeException;
 import jakarta.validation.constraints.NotEmpty;
@@ -13,15 +13,15 @@ public record ScheduleDto(
         @NotNull(message = "Employee ID should not be null.")
         Long employee_id,
 
-        @NotNull(message = "Birthday should not be null.")
+        @NotNull(message = "Shift started time should not be null.")
         LocalDateTime shiftStartedTime,
 
-        @NotNull(message = "Birthday should not be null.")
+        @NotNull(message = "Shift ended time should not be null.")
         LocalDateTime shiftEndedTime,
 
-        @NotEmpty(message = "WorkLocation should not be empty.")
-        @NotNull(message = "WorkLocation should not be null.")
-        @Size(min = 2, max = 15, message = "WorkLocation should be between 2 and 15 characters.")
+        @NotEmpty(message = "Work location should not be empty.")
+        @NotNull(message = "Work location should not be null.")
+        @Size(min = 2, max = 15, message = "Work location should be between 2 and 15 characters.")
         String workLocation
 
 ) {

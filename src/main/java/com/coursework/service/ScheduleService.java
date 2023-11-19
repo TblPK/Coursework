@@ -1,8 +1,8 @@
 package com.coursework.service;
 
+import com.coursework.dto.ScheduleDto;
 import com.coursework.exception.ScheduleNotFoundException;
 import com.coursework.model.Schedule;
-import com.coursework.model.ScheduleDto;
 import com.coursework.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

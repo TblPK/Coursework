@@ -1,4 +1,4 @@
-package com.coursework.model;
+package com.coursework.dto;
 
 import jakarta.validation.constraints.*;
 
@@ -15,9 +15,9 @@ public record EmployeeDto(
         @Size(min = 2, max = 15, message = "Second Name should be between 2 and 15 characters.")
         String secondName,
 
-        @Email(message = "Email should be valid.")
         @NotEmpty(message = "Email should not be empty.")
         @NotNull(message = "Email should not be null.")
+        @Email(message = "Email should be valid.")
         String email,
 
         @NotEmpty(message = "Position should not be empty.")
@@ -25,8 +25,8 @@ public record EmployeeDto(
         @Size(min = 2, max = 15, message = "Position should be between 2 and 15 characters.")
         String position,
 
-        @Past(message = "Birthday should be in the past.")
         @NotNull(message = "Birthday should not be null.")
+        @Past(message = "Birthday should be in the past.")
         LocalDate birthday
 ) {
 

@@ -1,7 +1,7 @@
 package com.coursework.controller;
 
+import com.coursework.dto.ScheduleDto;
 import com.coursework.model.Schedule;
-import com.coursework.model.ScheduleDto;
 import com.coursework.service.ScheduleService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
