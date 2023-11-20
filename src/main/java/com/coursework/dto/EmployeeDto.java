@@ -7,12 +7,12 @@ import java.time.LocalDate;
 public record EmployeeDto(
         @NotEmpty(message = "First Name should not be empty.")
         @NotNull(message = "First Name should not be null.")
-        @Size(min = 2, max = 15, message = "First Name should be between 2 and 15 characters.")
+        @Size(min = 2, max = 30, message = "First Name should be between 2 and 30 characters.")
         String firstName,
 
         @NotEmpty(message = "Second Name should not be empty.")
         @NotNull(message = "Second Name should not be null.")
-        @Size(min = 2, max = 15, message = "Second Name should be between 2 and 15 characters.")
+        @Size(min = 2, max = 30, message = "Second Name should be between 2 and 30 characters.")
         String secondName,
 
         @NotEmpty(message = "Email should not be empty.")
@@ -22,7 +22,7 @@ public record EmployeeDto(
 
         @NotEmpty(message = "Position should not be empty.")
         @NotNull(message = "Position should not be null.")
-        @Size(min = 2, max = 15, message = "Position should be between 2 and 15 characters.")
+        @Size(min = 2, max = 30, message = "Position should be between 2 and 30 characters.")
         String position,
 
         @NotNull(message = "Birthday should not be null.")

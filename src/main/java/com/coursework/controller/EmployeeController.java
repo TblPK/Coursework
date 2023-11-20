@@ -33,8 +33,8 @@ public class EmployeeController {
     }
 
     @Operation(summary = "Get employee by Email")
-    @GetMapping("/emails/{email}")
-    public Employee getEmployeeByEmail(@PathVariable String email) {
+    @GetMapping("/search")
+    public Employee getEmployeeByEmail(@RequestParam String email) {
         return employeeService.getEmployeeByEmail(email);
     }
 
@@ -54,8 +54,8 @@ public class EmployeeController {
 
     @Operation(summary = "Delete a employee")
     @DeleteMapping("/{id}")
-    public void deleteEmployee(@PathVariable Long id) {
-        employeeService.deleteEmployee(id);
+    public Employee deleteEmployee(@PathVariable Long id) {
+        return employeeService.deleteEmployee(id);
     }
 
 }
