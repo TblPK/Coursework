@@ -5,6 +5,7 @@ import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 
 public record EmployeeDto(
+
         @NotEmpty(message = "First Name should not be empty.")
         @NotNull(message = "First Name should not be null.")
         @Size(min = 2, max = 30, message = "First Name should be between 2 and 30 characters.")
@@ -28,6 +29,7 @@ public record EmployeeDto(
         @NotNull(message = "Birthday should not be null.")
         @Past(message = "Birthday should be in the past.")
         LocalDate birthday
+
 ) {
 
 }

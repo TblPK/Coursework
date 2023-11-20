@@ -40,14 +40,14 @@ public class EmployeeController {
 
     @Operation(summary = "Add a new employee")
     @PostMapping("/")
-    public Employee addEmployee(@Valid @ParameterObject EmployeeDto employeeDto) {
+    public Employee addEmployee(@Valid @RequestBody @ParameterObject EmployeeDto employeeDto) {
         Employee employee = employeeMapper.toEntity(employeeDto);
         return employeeService.addEmployee(employee);
     }
 
     @Operation(summary = "Update a employee")
     @PutMapping("/{id}")
-    public Employee updateEmployee(@PathVariable Long id, @Valid @ParameterObject EmployeeDto employeeDto) {
+    public Employee updateEmployee(@PathVariable Long id, @Valid @RequestBody @ParameterObject EmployeeDto employeeDto) {
         Employee employee = employeeMapper.toEntity(employeeDto);
         return employeeService.updateEmployee(id, employee);
     }
