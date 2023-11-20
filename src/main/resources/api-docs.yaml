@@ -1,0 +1,585 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /api/v1/schedules/{id}:
+    put:
+      tags:
+      - schedule-controller
+      summary: Update a schedule
+      operationId: updateSchedule
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: employee_id
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: shiftStartedTime
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date-time
+      - name: shiftEndedTime
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date-time
+      - name: workLocation
+        in: query
+        required: true
+        schema:
+          maxLength: 15
+          minLength: 2
+          type: string
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: string
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - type: object
+                  additionalProperties:
+                    type: string
+                - type: string
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                type: string
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Schedule'
+    delete:
+      tags:
+      - schedule-controller
+      summary: Delete a schedule
+      operationId: deleteSchedule
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: string
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - type: object
+                  additionalProperties:
+                    type: string
+                - type: string
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                type: string
+        "200":
+          description: OK
+  /api/v1/employees/{id}:
+    get:
+      tags:
+      - employee-controller
+      summary: Get employee by ID
+      operationId: getEmployeeById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: string
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - type: object
+                  additionalProperties:
+                    type: string
+                - type: string
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                type: string
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Employee'
+    put:
+      tags:
+      - employee-controller
+      summary: Update a employee
+      operationId: updateEmployee
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: firstName
+        in: query
+        required: true
+        schema:
+          maxLength: 15
+          minLength: 2
+          type: string
+      - name: secondName
+        in: query
+        required: true
+        schema:
+          maxLength: 15
+          minLength: 2
+          type: string
+      - name: email
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: position
+        in: query
+        required: true
+        schema:
+          maxLength: 15
+          minLength: 2
+          type: string
+      - name: birthday
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: string
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - type: object
+                  additionalProperties:
+                    type: string
+                - type: string
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                type: string
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Employee'
+    delete:
+      tags:
+      - employee-controller
+      summary: Delete a employee
+      operationId: deleteEmployee
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: string
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - type: object
+                  additionalProperties:
+                    type: string
+                - type: string
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                type: string
+        "200":
+          description: OK
+  /api/v1/schedules/:
+    get:
+      tags:
+      - schedule-controller
+      summary: Get all schedules
+      operationId: getAllSchedules
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: string
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - type: object
+                  additionalProperties:
+                    type: string
+                - type: string
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                type: string
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Schedule'
+    post:
+      tags:
+      - schedule-controller
+      summary: Add a new schedule
+      operationId: addSchedule
+      parameters:
+      - name: employee_id
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: shiftStartedTime
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date-time
+      - name: shiftEndedTime
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date-time
+      - name: workLocation
+        in: query
+        required: true
+        schema:
+          maxLength: 15
+          minLength: 2
+          type: string
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: string
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - type: object
+                  additionalProperties:
+                    type: string
+                - type: string
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                type: string
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Schedule'
+  /api/v1/employees/:
+    get:
+      tags:
+      - employee-controller
+      summary: Get all employees
+      operationId: getAllEmployees
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: string
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - type: object
+                  additionalProperties:
+                    type: string
+                - type: string
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                type: string
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Employee'
+    post:
+      tags:
+      - employee-controller
+      summary: Add a new employee
+      operationId: addEmployee
+      parameters:
+      - name: firstName
+        in: query
+        required: true
+        schema:
+          maxLength: 15
+          minLength: 2
+          type: string
+      - name: secondName
+        in: query
+        required: true
+        schema:
+          maxLength: 15
+          minLength: 2
+          type: string
+      - name: email
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: position
+        in: query
+        required: true
+        schema:
+          maxLength: 15
+          minLength: 2
+          type: string
+      - name: birthday
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: string
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - type: object
+                  additionalProperties:
+                    type: string
+                - type: string
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                type: string
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Employee'
+  /api/v1/schedules/{employeeId}:
+    get:
+      tags:
+      - schedule-controller
+      summary: Get schedules by employee ID
+      operationId: getAllSchedulesByEmployeeId
+      parameters:
+      - name: employeeId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: string
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - type: object
+                  additionalProperties:
+                    type: string
+                - type: string
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                type: string
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Schedule'
+  /api/v1/employees/emails/{email}:
+    get:
+      tags:
+      - employee-controller
+      summary: Get employee by Email
+      operationId: getEmployeeByEmail
+      parameters:
+      - name: email
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: string
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                - type: object
+                  additionalProperties:
+                    type: string
+                - type: string
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                type: string
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Employee'
+components:
+  schemas:
+    Employee:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        firstName:
+          type: string
+        secondName:
+          type: string
+        email:
+          type: string
+        position:
+          type: string
+        birthday:
+          type: string
+          format: date
+    Schedule:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        shiftStartedTime:
+          type: string
+          format: date-time
+        shiftEndedTime:
+          type: string
+          format: date-time
+        workLocation:
+          type: string
+        employee:
+          $ref: '#/components/schemas/Employee'
