@@ -74,9 +74,7 @@ public class EmployeeService {
      * @throws EmployeeNotFoundException if no employee is found with the given ID.
      */
     public Employee updateEmployee(Long id, Employee employee) {
-        employeeRepository.findById(id).orElseThrow(
-                () -> new EmployeeNotFoundException("Employee not found with id: " + id)
-        );
+        getEmployeeById(id);
         employee.setId(id);
 
         return employeeRepository.save(employee);

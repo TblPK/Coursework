@@ -4,12 +4,14 @@ import com.coursework.dto.EmployeeDto;
 import com.coursework.mapper.EmployeeMapper;
 import com.coursework.mapper.EmployeeMapperImpl;
 import com.coursework.model.Employee;
+import com.coursework.repository.EmployeeRepository;
 import com.coursework.service.EmployeeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -17,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
@@ -26,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(EmployeeController.class)
 @Import(EmployeeMapperImpl.class)
-class EmployeeControllerTest {
+class EmployeeControllerIntegrationTest {
 
     @Autowired
     MockMvc mockMvc;
@@ -37,23 +40,26 @@ class EmployeeControllerTest {
     @Autowired
     EmployeeMapper employeeMapper;
 
-    @MockBean
+    @SpyBean
     EmployeeService employeeService;
+
+    @MockBean
+    EmployeeRepository employeeRepository;
 
     @Test
     void shouldReturnAllEmployees() throws Exception {
         Employee employee1 = createValidEmployee();
-        employee1.setId(1L);
         Employee employee2 = createValidEmployee();
+        employee1.setId(1L);
         employee1.setId(2L);
         List<Employee> employees = Arrays.asList(employee1, employee2);
 
-        when(employeeService.getAllEmployees()).thenReturn(employees);
+        when(employeeRepository.findAll()).thenReturn(employees);
 
         mockMvc.perform(get("/api/v1/employees/"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$").value(2))
+                .andExpect(jsonPath("$.length()").value(employees.size()))
                 .andExpect(jsonPath("$[0].id").value(employee1.getId()))
                 .andExpect(jsonPath("$[0].firstName").value(employee1.getFirstName()))
                 .andExpect(jsonPath("$[0].secondName").value(employee1.getSecondName()))
@@ -72,9 +78,9 @@ class EmployeeControllerTest {
     void shouldReturnEmployeeById() throws Exception {
         Employee employee = createValidEmployee();
 
-        when(employeeService.getEmployeeById(anyLong())).thenReturn(employee);
+        when(employeeRepository.findById(anyLong())).thenReturn(Optional.of(employee));
 
-        mockMvc.perform(get("/api/v1/employees/{id}", 1))
+        mockMvc.perform(get("/api/v1/employees/{id}", employee.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(employee.getId()))
                 .andExpect(jsonPath("$.firstName").value(employee.getFirstName()))
@@ -85,10 +91,21 @@ class EmployeeControllerTest {
     }
 
     @Test
+    void shouldThrowEmployeeNotFoundExceptionWhenGettingNonExistingEmployeeById() throws Exception {
+        Long nonExistingEmployeeId = createValidEmployee().getId();
+
+        when(employeeRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/v1/employees/{id}", nonExistingEmployeeId))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$").value("Employee not found with id: " + nonExistingEmployeeId));
+    }
+
+    @Test
     void shouldReturnEmployeeByEmail() throws Exception {
         Employee employee = createValidEmployee();
 
-        when(employeeService.getEmployeeByEmail(anyString())).thenReturn(employee);
+        when(employeeRepository.findByEmail(anyString())).thenReturn(Optional.of(employee));
 
         mockMvc.perform(get("/api/v1/employees/search").param("email", employee.getEmail()))
                 .andExpect(status().isOk())
@@ -101,11 +118,23 @@ class EmployeeControllerTest {
     }
 
     @Test
+    void shouldThrowEmployeeNotFoundExceptionWhenGettingNonExistingEmployeeByEmail() throws Exception {
+        String nonExistingEmail = createValidEmployee().getEmail();
+
+        when(employeeRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/v1/employees/search").param("email", nonExistingEmail))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$").value("Employee not found with email: " + nonExistingEmail));
+    }
+
+    @Test
     void shouldAddEmployee() throws Exception {
         Employee employee = createValidEmployee();
         EmployeeDto employeeDto = employeeMapper.toDto(employee);
 
-        when(employeeService.addEmployee(any())).thenReturn(employee);
+        when(employeeRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+        when(employeeRepository.save(any())).thenReturn(employee);
 
         mockMvc.perform(post("/api/v1/employees/")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -121,13 +150,29 @@ class EmployeeControllerTest {
     }
 
     @Test
+    void shouldThrowEmployeeAlreadyExistsExceptionWhenAddingDuplicateEmployee() throws Exception {
+        Employee existingEmployee = createValidEmployee();
+        EmployeeDto employeeDto = employeeMapper.toDto(existingEmployee);
+
+        when(employeeRepository.findByEmail(anyString())).thenReturn(Optional.of(existingEmployee));
+
+        mockMvc.perform(post("/api/v1/employees/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(employeeDto))
+                )
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$").value("Employee already exists with email: " + existingEmployee.getEmail()));
+    }
+
+    @Test
     void shouldUpdateEmployee() throws Exception {
         Employee employee = createValidEmployee();
         EmployeeDto employeeDto = employeeMapper.toDto(employee);
 
-        when(employeeService.updateEmployee(anyLong(), any())).thenReturn(employee);
+        when(employeeRepository.findById(anyLong())).thenReturn(Optional.of(employee));
+        when(employeeRepository.save(any())).thenReturn(employee);
 
-        mockMvc.perform(put("/api/v1/employees/{id}", 1)
+        mockMvc.perform(put("/api/v1/employees/{id}", employee.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(employeeDto))
                 )
@@ -141,10 +186,25 @@ class EmployeeControllerTest {
     }
 
     @Test
+    void shouldThrowEmployeeNotFoundExceptionWhenUpdatingNonExistingEmployee() throws Exception {
+        Employee employee = createValidEmployee();
+        EmployeeDto employeeDto = employeeMapper.toDto(employee);
+
+        when(employeeRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        mockMvc.perform(put("/api/v1/employees/{id}", employee.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(employeeDto))
+                )
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$").value("Employee not found with id: " + employee.getId()));
+    }
+
+    @Test
     void shouldDeleteEmployee() throws Exception{
         Employee employee = createValidEmployee();
 
-        when(employeeService.deleteEmployee(anyLong())).thenReturn(employee);
+        when(employeeRepository.findById(anyLong())).thenReturn(Optional.of(employee));
 
         mockMvc.perform(delete("/api/v1/employees/{id}", 1))
                 .andExpect(status().isOk())
@@ -155,6 +215,18 @@ class EmployeeControllerTest {
                 .andExpect(jsonPath("$.position").value(employee.getPosition()))
                 .andExpect(jsonPath("$.birthday").value(employee.getBirthday().toString()));
     }
+
+    @Test
+    void shouldThrowEmployeeNotFoundExceptionWhenDeletingNonExistingEmployee() throws Exception {
+        Employee employee = createValidEmployee();
+
+        when(employeeRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        mockMvc.perform(delete("/api/v1/employees/{id}", employee.getId()))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$").value("Employee not found with id: " + employee.getId()));
+    }
+
 
     Employee createValidEmployee() {
         Long id = 1L;
