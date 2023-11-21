@@ -1,7 +1,9 @@
 package com.coursework.service;
 
+import com.coursework.dto.EmployeeDto;
 import com.coursework.exception.EmployeeAlreadyExistsException;
 import com.coursework.exception.EmployeeNotFoundException;
+import com.coursework.mapper.EmployeeMapper;
 import com.coursework.model.Employee;
 import com.coursework.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import java.util.List;
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+    private final EmployeeMapper employeeMapper;
 
     /**
      * Retrieves a list of all employees.
@@ -32,8 +35,8 @@ public class EmployeeService {
      * @throws EmployeeNotFoundException if no employee is found with the given ID.
      */
     public Employee getEmployeeById(Long id) {
-        return employeeRepository.findById(id).orElseThrow(
-                () -> new EmployeeNotFoundException("Employee not found with id: " + id)
+        return employeeRepository.findById(id).orElseThrow(() ->
+                new EmployeeNotFoundException("Employee not found with id: " + id)
         );
     }
 
@@ -53,11 +56,12 @@ public class EmployeeService {
     /**
      * Adds a new employee.
      *
-     * @param employee The employee to add.
+     * @param employeeDto The employee to add.
      * @return The added employee.
      * @throws EmployeeAlreadyExistsException if an employee with the same email already exists.
      */
-    public Employee addEmployee(Employee employee) {
+    public Employee addEmployee(EmployeeDto employeeDto) {
+        Employee employee = employeeMapper.toEntity(employeeDto);
         employeeRepository.findByEmail(employee.getEmail()).ifPresent(existingEmployee -> {
             throw new EmployeeAlreadyExistsException("Employee already exists with email: " + employee.getEmail());
         });
@@ -68,12 +72,13 @@ public class EmployeeService {
     /**
      * Updates an existing employee.
      *
-     * @param id       The ID of the employee to update.
-     * @param employee The updated employee data.
+     * @param id          The ID of the employee to update.
+     * @param employeeDto The updated employee data.
      * @return The updated employee.
      * @throws EmployeeNotFoundException if no employee is found with the given ID.
      */
-    public Employee updateEmployee(Long id, Employee employee) {
+    public Employee updateEmployee(Long id, EmployeeDto employeeDto) {
+        Employee employee = employeeMapper.toEntity(employeeDto);
         getEmployeeById(id);
         employee.setId(id);
 

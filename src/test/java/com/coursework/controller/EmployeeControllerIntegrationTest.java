@@ -107,7 +107,7 @@ class EmployeeControllerIntegrationTest {
 
         when(employeeRepository.findByEmail(anyString())).thenReturn(Optional.of(employee));
 
-        mockMvc.perform(get("/api/v1/employees/search").param("email", employee.getEmail()))
+        mockMvc.perform(get("/api/v1/employees/emails/{email}", employee.getEmail()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(employee.getId()))
                 .andExpect(jsonPath("$.firstName").value(employee.getFirstName()))
@@ -123,7 +123,7 @@ class EmployeeControllerIntegrationTest {
 
         when(employeeRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
-        mockMvc.perform(get("/api/v1/employees/search").param("email", nonExistingEmail))
+        mockMvc.perform(get("/api/v1/employees/emails/{email}", nonExistingEmail))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$").value("Employee not found with email: " + nonExistingEmail));
     }

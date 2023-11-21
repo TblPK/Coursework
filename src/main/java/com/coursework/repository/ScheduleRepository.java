@@ -6,5 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
+
     List<Schedule> findAllByEmployee_Id(Long employeeId);
+
+    List<Schedule> findAllByWorkLocation(String workLocation);
+
 }

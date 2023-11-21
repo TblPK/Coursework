@@ -11,7 +11,7 @@ public record ScheduleDto(
 
         @NotEmpty(message = "Employee ID should not be empty.")
         @NotNull(message = "Employee ID should not be null.")
-        Long employee_id,
+        Long employeeId,
 
         @NotNull(message = "Shift started time should not be null.")
         LocalDateTime shiftStartedTime,
