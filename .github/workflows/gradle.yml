@@ -24,11 +24,12 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Set secrets
+    - name: Replace secrets in application.yml
+      run: |
+        sed -i "s/\${{ secrets.USERNAME }}/$USERNAME/g" path/to/your/application.yml
+        sed -i "s/\${{ secrets.PASSWORD }}/$PASSWORD/g" path/to/your/application.yml
       env:
         USERNAME: ${{ secrets.USERNAME }}
         PASSWORD: ${{ secrets.PASSWORD }}
-      with:
-        app_yaml_path: "application.yaml"
     - name: Run unit tests
       run: ./gradlew -x test
