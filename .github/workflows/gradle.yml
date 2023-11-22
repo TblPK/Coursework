@@ -26,5 +26,7 @@ jobs:
       env:
         USERNAME: ${{ secrets.USERNAME }}
         PASSWORD: ${{ secrets.PASSWORD }}
+    - name: Change wrapper permissions
+      run: chmod +x ./gradlew
     - name: Run unit tests
-      run: ./gradlew -x test
+      run: ./gradlew test
