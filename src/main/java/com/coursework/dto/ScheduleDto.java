@@ -21,7 +21,7 @@ public record ScheduleDto(
 
         @NotEmpty(message = "Work location should not be empty.")
         @NotNull(message = "Work location should not be null.")
-        @Size(min = 2, max = 15, message = "Work location should be between 2 and 15 characters.")
+        @Size(min = 2, max = 30, message = "Work location should be between 2 and 30 characters.")
         String workLocation
 
 ) {

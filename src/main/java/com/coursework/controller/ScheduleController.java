@@ -24,7 +24,7 @@ public class ScheduleController {
 
     @Operation(summary = "Get schedules by employee ID")
     @GetMapping("/employeeId/{employeeId}")
-    public List<Schedule> getAllSchedulesByEmployeeId(
+    public List<ScheduleDto> getAllSchedulesByEmployeeId(
             @PathVariable Long employeeId
     ) {
         return scheduleService.getAllSchedulesByEmployeeId(employeeId);
@@ -32,7 +32,7 @@ public class ScheduleController {
 
     @Operation(summary = "Get schedules by work location")
     @GetMapping("/workLocation/{workLocation}")
-    public List<Schedule> getAllSchedulesByWorkLocation(
+    public List<ScheduleDto> getAllSchedulesByWorkLocation(
             @PathVariable String workLocation
     ) {
         return scheduleService.getAllSchedulesByWorkLocation(workLocation);
@@ -40,7 +40,7 @@ public class ScheduleController {
 
     @Operation(summary = "Add a new schedule")
     @PostMapping("/")
-    public Schedule addSchedule(
+    public ScheduleDto addSchedule(
             @RequestBody ScheduleDto scheduleDto
     ) {
         return scheduleService.addSchedule(scheduleDto);
@@ -48,7 +48,7 @@ public class ScheduleController {
 
     @Operation(summary = "Update a schedule")
     @PutMapping("/{id}")
-    public Schedule updateSchedule(
+    public ScheduleDto updateSchedule(
             @PathVariable Long id,
             @RequestBody ScheduleDto scheduleDto
     ) {
@@ -57,7 +57,7 @@ public class ScheduleController {
 
     @Operation(summary = "Delete a schedule")
     @DeleteMapping("/{id}")
-    public Schedule deleteSchedule(
+    public ScheduleDto deleteSchedule(
             @PathVariable Long id
     ) {
         return scheduleService.deleteSchedule(id);
