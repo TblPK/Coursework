@@ -21,7 +21,5 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@e49da54b8de78a9c321173b99596456922f0f530 # v2.6.0
-      with:
-        arguments: build
+    - name: Run unit tests
+      run: ./gradlew test
