@@ -23,5 +23,12 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
+
+    - name: Set secrets
+      env:
+        USERNAME: ${{ secrets.USERNAME }}
+        PASSWORD: ${{ secrets.PASSWORD }}
+      with:
+        app_yaml_path: "application.yaml"
     - name: Run unit tests
       run: ./gradlew -x test
