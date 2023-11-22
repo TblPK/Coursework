@@ -23,11 +23,6 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-
-    - name: Replace secrets in application.yml
-      run: |
-        sed -i "s/\${{ secrets.USERNAME }}/$USERNAME/g" src/main/resources/application.yaml
-        sed -i "s/\${{ secrets.PASSWORD }}/$PASSWORD/g" src/main/resources/application.yaml
       env:
         USERNAME: ${{ secrets.USERNAME }}
         PASSWORD: ${{ secrets.PASSWORD }}
