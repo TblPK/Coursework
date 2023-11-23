@@ -1,6 +1,9 @@
 package com.coursework.service;
 
+import com.coursework.dto.EmployeeDto;
+import com.coursework.exception.EmployeeAlreadyExistsException;
 import com.coursework.exception.EmployeeNotFoundException;
+import com.coursework.mapper.EmployeeMapper;
 import com.coursework.model.Employee;
 import com.coursework.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,37 +16,86 @@ import java.util.List;
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+    private final EmployeeMapper employeeMapper;
 
+    /**
+     * Retrieves a list of all employees.
+     *
+     * @return List of all employees.
+     */
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAll();
     }
 
+    /**
+     * Retrieves an employee by their ID.
+     *
+     * @param id The ID of the employee to retrieve.
+     * @return The employee with the specified ID.
+     * @throws EmployeeNotFoundException if no employee is found with the given ID.
+     */
     public Employee getEmployeeById(Long id) {
-        return employeeRepository.findById(id).orElseThrow(
-                () -> new EmployeeNotFoundException("Employee not found for id: " + id)
+        return employeeRepository.findById(id).orElseThrow(() ->
+                new EmployeeNotFoundException("Employee not found with id: " + id)
         );
     }
 
+    /**
+     * Retrieves an employee by their email.
+     *
+     * @param email The email of the employee to retrieve.
+     * @return The employee with the specified email.
+     * @throws EmployeeNotFoundException if no employee is found with the given email.
+     */
     public Employee getEmployeeByEmail(String email) {
         return employeeRepository.findByEmail(email).orElseThrow(() ->
-                new EmployeeNotFoundException("Employee not found for email: " + email)
+                new EmployeeNotFoundException("Employee not found with email: " + email)
         );
     }
 
-    public Employee addEmployee(Employee employee) {
-        getEmployeeByEmail(employee.getEmail());
+    /**
+     * Adds a new employee.
+     *
+     * @param employeeDto The employee to add.
+     * @return The added employee.
+     * @throws EmployeeAlreadyExistsException if an employee with the same email already exists.
+     */
+    public Employee addEmployee(EmployeeDto employeeDto) {
+        Employee employee = employeeMapper.toEntity(employeeDto);
+        employeeRepository.findByEmail(employee.getEmail()).ifPresent(existingEmployee -> {
+            throw new EmployeeAlreadyExistsException("Employee already exists with email: " + employee.getEmail());
+        });
+
         return employeeRepository.save(employee);
     }
 
-    public Employee updateEmployee(Long id, Employee employee) {
-        employeeRepository.findById(id).orElseThrow(
-                () -> new EmployeeNotFoundException("Employee not found for id: " + id)
-        );
+    /**
+     * Updates an existing employee.
+     *
+     * @param id          The ID of the employee to update.
+     * @param employeeDto The updated employee data.
+     * @return The updated employee.
+     * @throws EmployeeNotFoundException if no employee is found with the given ID.
+     */
+    public Employee updateEmployee(Long id, EmployeeDto employeeDto) {
+        Employee employee = employeeMapper.toEntity(employeeDto);
+        getEmployeeById(id);
+        employee.setId(id);
 
         return employeeRepository.save(employee);
     }
 
-    public void deleteEmployee(Long id) {
+    /**
+     * Deletes an employee by their ID.
+     *
+     * @param id The ID of the employee to delete.
+     * @throws EmployeeNotFoundException if no employee is found with the given ID.
+     */
+    public Employee deleteEmployee(Long id) {
+        Employee employee = getEmployeeById(id);
         employeeRepository.deleteById(id);
+
+        return employee;
     }
+
 }

@@ -1,4 +1,4 @@
-package com.coursework.exception;
+package com.coursework.advice;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
@@ -27,24 +27,6 @@ public class ExceptionHandlerAdvice {
                 error -> errors.put(((FieldError) error).getField(), error.getDefaultMessage())
         );
         return errors;
-    }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(EmployeeNotFoundException.class)
-    public String EmployeeNotFoundException(EmployeeNotFoundException ex) {
-        return ex.getMessage();
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(InvalidShiftTimeException.class)
-    public String InvalidShiftTimeException(InvalidShiftTimeException ex) {
-        return ex.getMessage();
-    }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(ScheduleNotFoundException.class)
-    public String ScheduleNotFoundException(ScheduleNotFoundException ex) {
-        return ex.getMessage();
     }
 
 }

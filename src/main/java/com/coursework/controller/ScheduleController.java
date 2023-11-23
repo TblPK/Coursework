@@ -5,7 +5,6 @@ import com.coursework.model.Schedule;
 import com.coursework.service.ScheduleService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,27 +23,45 @@ public class ScheduleController {
     }
 
     @Operation(summary = "Get schedules by employee ID")
-    @GetMapping("/{employeeId}")
-    public List<Schedule> getAllSchedulesByEmployeeId(@PathVariable Long employeeId) {
+    @GetMapping("/employeeId/{employeeId}")
+    public List<ScheduleDto> getAllSchedulesByEmployeeId(
+            @PathVariable Long employeeId
+    ) {
         return scheduleService.getAllSchedulesByEmployeeId(employeeId);
+    }
+
+    @Operation(summary = "Get schedules by work location")
+    @GetMapping("/workLocation/{workLocation}")
+    public List<ScheduleDto> getAllSchedulesByWorkLocation(
+            @PathVariable String workLocation
+    ) {
+        return scheduleService.getAllSchedulesByWorkLocation(workLocation);
     }
 
     @Operation(summary = "Add a new schedule")
     @PostMapping("/")
-    public Schedule addSchedule(@ParameterObject ScheduleDto scheduleDto) {
+    public ScheduleDto addSchedule(
+            @RequestBody ScheduleDto scheduleDto
+    ) {
         return scheduleService.addSchedule(scheduleDto);
     }
 
     @Operation(summary = "Update a schedule")
     @PutMapping("/{id}")
-    public Schedule updateSchedule(@PathVariable Long id, @ParameterObject ScheduleDto scheduleDto) {
+    public ScheduleDto updateSchedule(
+            @PathVariable Long id,
+            @RequestBody ScheduleDto scheduleDto
+    ) {
         return scheduleService.updateSchedule(id, scheduleDto);
     }
 
     @Operation(summary = "Delete a schedule")
     @DeleteMapping("/{id}")
-    public void deleteSchedule(@PathVariable Long id) {
-        scheduleService.deleteSchedule(id);
+    public ScheduleDto deleteSchedule(
+            @PathVariable Long id
+    ) {
+        return scheduleService.deleteSchedule(id);
     }
+
 }
 
