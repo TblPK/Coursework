@@ -1,12 +1,10 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/mydb
-    username: ${{ secrets.USERNAME }}
-    password: ${{ secrets.PASSWORD }}
+    username: ${ USERNAME }
+    password: ${ PASSWORD }
     driver-class-name: org.postgresql.Driver
   jpa:
     open-in-view: true
     show-sql: true
     generate-ddl: true
-  config:
-    import: optional:secrets.properties
