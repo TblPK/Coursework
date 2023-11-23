@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - feature
   pull_request:
     branches: 
       - master
@@ -23,9 +24,6 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-      env:
-        USERNAME: ${{ secrets.USERNAME }}
-        PASSWORD: ${{ secrets.PASSWORD }}
     - name: Change wrapper permissions
       run: chmod +x ./gradlew
     - name: Run unit tests
