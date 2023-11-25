@@ -1,5 +1,6 @@
 package com.coursework.advice;
 
+import com.coursework.exception.IncorrectUsernameOrPasswordException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -27,6 +28,12 @@ public class ExceptionHandlerAdvice {
                 error -> errors.put(((FieldError) error).getField(), error.getDefaultMessage())
         );
         return errors;
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(IncorrectUsernameOrPasswordException.class)
+    public String EmployeeAlreadyExistsException(IncorrectUsernameOrPasswordException ex) {
+        return ex.getMessage();
     }
 
 }

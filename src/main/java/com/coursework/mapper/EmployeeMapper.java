@@ -9,6 +9,8 @@ import org.mapstruct.Mapping;
 public interface EmployeeMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "username", ignore = true)
+    @Mapping(target = "password", ignore = true)
     @Mapping(source = "firstName", target = "firstName")
     @Mapping(source = "secondName", target = "secondName")
     @Mapping(source = "email", target = "email")

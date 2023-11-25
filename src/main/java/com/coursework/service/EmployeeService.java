@@ -3,17 +3,20 @@ package com.coursework.service;
 import com.coursework.dto.EmployeeDto;
 import com.coursework.exception.EmployeeAlreadyExistsException;
 import com.coursework.exception.EmployeeNotFoundException;
+import com.coursework.exception.IncorrectUsernameOrPasswordException;
 import com.coursework.mapper.EmployeeMapper;
 import com.coursework.model.Employee;
 import com.coursework.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class EmployeeService {
+public class EmployeeService implements UserDetailsService {
 
     private final EmployeeRepository employeeRepository;
     private final EmployeeMapper employeeMapper;
@@ -34,10 +37,12 @@ public class EmployeeService {
      * @return The employee with the specified ID.
      * @throws EmployeeNotFoundException if no employee is found with the given ID.
      */
-    public Employee getEmployeeById(Long id) {
-        return employeeRepository.findById(id).orElseThrow(() ->
+    public EmployeeDto getEmployeeById(Long id) {
+        Employee employee = employeeRepository.findById(id).orElseThrow(() ->
                 new EmployeeNotFoundException("Employee not found with id: " + id)
         );
+
+        return employeeMapper.toDto(employee);
     }
 
     /**
@@ -92,10 +97,17 @@ public class EmployeeService {
      * @throws EmployeeNotFoundException if no employee is found with the given ID.
      */
     public Employee deleteEmployee(Long id) {
-        Employee employee = getEmployeeById(id);
+        EmployeeDto employeeDto = getEmployeeById(id);
         employeeRepository.deleteById(id);
 
-        return employee;
+        return null;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        return employeeRepository.findByUsername(username).orElseThrow(() ->
+                new IncorrectUsernameOrPasswordException("Incorrect username or password")
+        );
     }
 
 }
