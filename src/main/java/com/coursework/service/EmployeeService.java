@@ -52,21 +52,22 @@ public class EmployeeService implements UserDetailsService {
      * @return The employee with the specified email.
      * @throws EmployeeNotFoundException if no employee is found with the given email.
      */
-    public Employee getEmployeeByEmail(String email) {
-        return employeeRepository.findByEmail(email).orElseThrow(() ->
+    public EmployeeDto getEmployeeByEmail(String email) {
+        Employee employee = employeeRepository.findByEmail(email).orElseThrow(() ->
                 new EmployeeNotFoundException("Employee not found with email: " + email)
         );
+
+        return employeeMapper.toDto(employee);
     }
 
     /**
      * Adds a new employee.
      *
-     * @param employeeDto The employee to add.
+     * @param employee The employee to add.
      * @return The added employee.
      * @throws EmployeeAlreadyExistsException if an employee with the same email already exists.
      */
-    public Employee addEmployee(EmployeeDto employeeDto) {
-        Employee employee = employeeMapper.toEntity(employeeDto);
+    public Employee addEmployee(Employee employee) {
         employeeRepository.findByEmail(employee.getEmail()).ifPresent(existingEmployee -> {
             throw new EmployeeAlreadyExistsException("Employee already exists with email: " + employee.getEmail());
         });
@@ -78,12 +79,11 @@ public class EmployeeService implements UserDetailsService {
      * Updates an existing employee.
      *
      * @param id          The ID of the employee to update.
-     * @param employeeDto The updated employee data.
+     * @param employee The updated employee data.
      * @return The updated employee.
      * @throws EmployeeNotFoundException if no employee is found with the given ID.
      */
-    public Employee updateEmployee(Long id, EmployeeDto employeeDto) {
-        Employee employee = employeeMapper.toEntity(employeeDto);
+    public Employee updateEmployee(Long id, Employee employee) {
         getEmployeeById(id);
         employee.setId(id);
 

@@ -6,6 +6,7 @@ import com.coursework.service.EmployeeService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,12 +20,14 @@ public class EmployeeController {
 
     @Operation(summary = "Get all employees")
     @GetMapping("/")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<Employee> getAllEmployees() {
         return employeeService.getAllEmployees();
     }
 
     @Operation(summary = "Get employee by ID")
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public EmployeeDto getEmployeeById(
             @PathVariable Long id
     ) {
@@ -33,7 +36,8 @@ public class EmployeeController {
 
     @Operation(summary = "Get employee by Email")
     @GetMapping("/emails/{email}")
-    public Employee getEmployeeByEmail(
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public EmployeeDto getEmployeeByEmail(
             @PathVariable String email
     ) {
         return employeeService.getEmployeeByEmail(email);
@@ -41,23 +45,26 @@ public class EmployeeController {
 
     @Operation(summary = "Add a new employee")
     @PostMapping("/")
+    @PreAuthorize("hasRole('ADMIN')")
     public Employee addEmployee(
-            @Valid @RequestBody EmployeeDto employeeDto
+            @Valid @RequestBody Employee employee
     ) {
-        return employeeService.addEmployee(employeeDto);
+        return employeeService.addEmployee(employee);
     }
 
     @Operation(summary = "Update a employee")
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public Employee updateEmployee(
             @PathVariable Long id,
-            @Valid @RequestBody EmployeeDto employeeDto
+            @Valid @RequestBody Employee employee
     ) {
-        return employeeService.updateEmployee(id, employeeDto);
+        return employeeService.updateEmployee(id, employee);
     }
 
     @Operation(summary = "Delete a employee")
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public Employee deleteEmployee(
             @PathVariable Long id
     ) {
