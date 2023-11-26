@@ -1,10 +1,10 @@
 package com.coursework.controller;
 
 import com.coursework.dto.ScheduleDto;
+import com.coursework.mapper.CustomMapper;
 import com.coursework.mapper.EmployeeMapperImpl;
 import com.coursework.mapper.ScheduleMapper;
 import com.coursework.mapper.ScheduleMapperImpl;
-import com.coursework.mapper.UserIdMapper;
 import com.coursework.model.Schedule;
 import com.coursework.repository.EmployeeRepository;
 import com.coursework.repository.ScheduleRepository;
@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ScheduleController.class)
-@Import({ScheduleMapperImpl.class, UserIdMapper.class, EmployeeMapperImpl.class})
+@Import({ScheduleMapperImpl.class, CustomMapper.class, EmployeeMapperImpl.class})
 class ScheduleControllerIntegrationTest {
 
     @Autowired
@@ -45,7 +45,7 @@ class ScheduleControllerIntegrationTest {
     ScheduleMapper scheduleMapper;
 
     @SpyBean
-    UserIdMapper userIdMapper;
+    CustomMapper customMapper;
 
     @SpyBean
     ScheduleService scheduleService;

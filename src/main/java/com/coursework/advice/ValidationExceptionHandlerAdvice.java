@@ -1,6 +1,5 @@
 package com.coursework.advice;
 
-import com.coursework.exception.IncorrectUsernameOrPasswordException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -12,13 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-public class ExceptionHandlerAdvice {
-
-//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-//    @ExceptionHandler(Throwable.class)
-//    public String handleExceptions() {
-//        return "Something went wrong";
-//    }
+public class ValidationExceptionHandlerAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -28,12 +21,6 @@ public class ExceptionHandlerAdvice {
                 error -> errors.put(((FieldError) error).getField(), error.getDefaultMessage())
         );
         return errors;
-    }
-
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler(IncorrectUsernameOrPasswordException.class)
-    public String EmployeeAlreadyExistsException(IncorrectUsernameOrPasswordException ex) {
-        return ex.getMessage();
     }
 
 }

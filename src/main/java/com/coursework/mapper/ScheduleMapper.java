@@ -5,7 +5,7 @@ import com.coursework.model.Schedule;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = UserIdMapper.class)
+@Mapper(componentModel = "spring", uses = CustomMapper.class)
 public interface ScheduleMapper {
 
     @Mapping(target = "id", ignore = true)

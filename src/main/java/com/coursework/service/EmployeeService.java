@@ -26,8 +26,8 @@ public class EmployeeService implements UserDetailsService {
      *
      * @return List of all employees.
      */
-    public List<Employee> getAllEmployees() {
-        return employeeRepository.findAll();
+    public List<EmployeeDto> getAllEmployees() {
+        return employeeRepository.findAll().stream().map(employeeMapper::toDto).toList();
     }
 
     /**
@@ -63,51 +63,60 @@ public class EmployeeService implements UserDetailsService {
     /**
      * Adds a new employee.
      *
-     * @param employee The employee to add.
+     * @param employeeDto The employee to add.
      * @return The added employee.
      * @throws EmployeeAlreadyExistsException if an employee with the same email already exists.
      */
-    public Employee addEmployee(Employee employee) {
-        employeeRepository.findByEmail(employee.getEmail()).ifPresent(existingEmployee -> {
-            throw new EmployeeAlreadyExistsException("Employee already exists with email: " + employee.getEmail());
+    public EmployeeDto addEmployee(EmployeeDto employeeDto) {
+        employeeRepository.findByEmail(employeeDto.email()).ifPresent(employee -> {
+            throw new EmployeeAlreadyExistsException("Employee already exists with email: " + employeeDto.email());
         });
+        Employee employee = employeeMapper.toEntity(employeeDto);
 
-        return employeeRepository.save(employee);
+        return employeeMapper.toDto(employeeRepository.save(employee));
     }
 
     /**
      * Updates an existing employee.
      *
      * @param id          The ID of the employee to update.
-     * @param employee The updated employee data.
+     * @param employeeDto The updated employee data.
      * @return The updated employee.
      * @throws EmployeeNotFoundException if no employee is found with the given ID.
      */
-    public Employee updateEmployee(Long id, Employee employee) {
+    public EmployeeDto updateEmployee(Long id, EmployeeDto employeeDto) {
         getEmployeeById(id);
+        Employee employee = employeeMapper.toEntity(employeeDto);
         employee.setId(id);
 
-        return employeeRepository.save(employee);
+        return employeeMapper.toDto(employeeRepository.save(employee));
     }
 
     /**
      * Deletes an employee by their ID.
      *
      * @param id The ID of the employee to delete.
+     * @return The deleted employee.
      * @throws EmployeeNotFoundException if no employee is found with the given ID.
      */
-    public Employee deleteEmployee(Long id) {
+    public EmployeeDto deleteEmployee(Long id) {
         EmployeeDto employeeDto = getEmployeeById(id);
         employeeRepository.deleteById(id);
 
-        return null;
+        return employeeDto;
     }
 
+    /**
+     * Load user by username (used by Spring Security).
+     *
+     * @param username The username to load the user.
+     * @return UserDetails object representing the loaded user.
+     * @throws IncorrectUsernameOrPasswordException if no user is found with the given username.
+     */
     @Override
     public UserDetails loadUserByUsername(String username) {
         return employeeRepository.findByUsername(username).orElseThrow(() ->
                 new IncorrectUsernameOrPasswordException("Incorrect username or password")
         );
     }
-
 }

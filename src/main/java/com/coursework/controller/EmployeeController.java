@@ -1,7 +1,6 @@
 package com.coursework.controller;
 
 import com.coursework.dto.EmployeeDto;
-import com.coursework.model.Employee;
 import com.coursework.service.EmployeeService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -21,7 +20,7 @@ public class EmployeeController {
     @Operation(summary = "Get all employees")
     @GetMapping("/")
     @PreAuthorize("hasRole('ADMIN')")
-    public List<Employee> getAllEmployees() {
+    public List<EmployeeDto> getAllEmployees() {
         return employeeService.getAllEmployees();
     }
 
@@ -46,26 +45,26 @@ public class EmployeeController {
     @Operation(summary = "Add a new employee")
     @PostMapping("/")
     @PreAuthorize("hasRole('ADMIN')")
-    public Employee addEmployee(
-            @Valid @RequestBody Employee employee
+    public EmployeeDto addEmployee(
+            @Valid @RequestBody EmployeeDto employeeDto
     ) {
-        return employeeService.addEmployee(employee);
+        return employeeService.addEmployee(employeeDto);
     }
 
     @Operation(summary = "Update a employee")
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public Employee updateEmployee(
+    public EmployeeDto updateEmployee(
             @PathVariable Long id,
-            @Valid @RequestBody Employee employee
+            @Valid @RequestBody EmployeeDto employeeDto
     ) {
-        return employeeService.updateEmployee(id, employee);
+        return employeeService.updateEmployee(id, employeeDto);
     }
 
     @Operation(summary = "Delete a employee")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public Employee deleteEmployee(
+    public EmployeeDto deleteEmployee(
             @PathVariable Long id
     ) {
         return employeeService.deleteEmployee(id);
