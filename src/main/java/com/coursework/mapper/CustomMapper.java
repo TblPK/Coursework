@@ -19,6 +19,7 @@ public class CustomMapper {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Named("toEmployee")
     public Employee toEmployee(Long id) {
         if (id == null) return null;
         return employeeRepository.findById(id).orElseThrow(() ->
@@ -26,6 +27,7 @@ public class CustomMapper {
         );
     }
 
+    @Named("toEmployeeId")
     public Long toEmployeeId(Employee employee) {
         return employee == null ? null : employee.getId();
     }

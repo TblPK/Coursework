@@ -14,7 +14,7 @@ import org.mapstruct.ReportingPolicy;
 )
 public interface EmployeeMapper {
 
-    @Mapping(target = "id", ignore = true)
+    @Mapping(source = "id", target = "id")
     @Mapping(source = "firstName", target = "firstName")
     @Mapping(source = "secondName", target = "secondName")
     @Mapping(source = "email", target = "email")
@@ -26,6 +26,7 @@ public interface EmployeeMapper {
     @Mapping(target = "authorities", ignore = true)
     Employee toEntity(EmployeeDto employeeDto);
 
+    @Mapping(source = "id", target = "id")
     @Mapping(source = "firstName", target = "firstName")
     @Mapping(source = "secondName", target = "secondName")
     @Mapping(source = "email", target = "email")

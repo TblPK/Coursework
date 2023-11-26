@@ -7,6 +7,9 @@ import java.time.LocalDate;
 
 public record EmployeeDto(
 
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+        Long id,
+
         @NotEmpty(message = "First Name should not be empty.")
         @NotNull(message = "First Name should not be null.")
         @Size(min = 2, max = 30, message = "First Name should be between 2 and 30 characters.")
