@@ -1,6 +1,7 @@
 package com.coursework.dto;
 
 import com.coursework.exception.InvalidShiftTimeException;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -9,9 +10,11 @@ import java.time.LocalDateTime;
 
 public record ScheduleDto(
 
-        @NotEmpty(message = "Employee ID should not be empty.")
-        @NotNull(message = "Employee ID should not be null.")
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
         Long employeeId,
+
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+        Long scheduleId,
 
         @NotNull(message = "Shift started time should not be null.")
         LocalDateTime shiftStartedTime,

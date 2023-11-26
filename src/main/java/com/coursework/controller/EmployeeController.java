@@ -1,11 +1,11 @@
 package com.coursework.controller;
 
 import com.coursework.dto.EmployeeDto;
-import com.coursework.model.Employee;
 import com.coursework.service.EmployeeService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,13 +19,15 @@ public class EmployeeController {
 
     @Operation(summary = "Get all employees")
     @GetMapping("/")
-    public List<Employee> getAllEmployees() {
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<EmployeeDto> getAllEmployees() {
         return employeeService.getAllEmployees();
     }
 
     @Operation(summary = "Get employee by ID")
     @GetMapping("/{id}")
-    public Employee getEmployeeById(
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public EmployeeDto getEmployeeById(
             @PathVariable Long id
     ) {
         return employeeService.getEmployeeById(id);
@@ -33,7 +35,8 @@ public class EmployeeController {
 
     @Operation(summary = "Get employee by Email")
     @GetMapping("/emails/{email}")
-    public Employee getEmployeeByEmail(
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public EmployeeDto getEmployeeByEmail(
             @PathVariable String email
     ) {
         return employeeService.getEmployeeByEmail(email);
@@ -41,7 +44,8 @@ public class EmployeeController {
 
     @Operation(summary = "Add a new employee")
     @PostMapping("/")
-    public Employee addEmployee(
+    @PreAuthorize("hasRole('ADMIN')")
+    public EmployeeDto addEmployee(
             @Valid @RequestBody EmployeeDto employeeDto
     ) {
         return employeeService.addEmployee(employeeDto);
@@ -49,7 +53,8 @@ public class EmployeeController {
 
     @Operation(summary = "Update a employee")
     @PutMapping("/{id}")
-    public Employee updateEmployee(
+    @PreAuthorize("hasRole('ADMIN')")
+    public EmployeeDto updateEmployee(
             @PathVariable Long id,
             @Valid @RequestBody EmployeeDto employeeDto
     ) {
@@ -58,7 +63,8 @@ public class EmployeeController {
 
     @Operation(summary = "Delete a employee")
     @DeleteMapping("/{id}")
-    public Employee deleteEmployee(
+    @PreAuthorize("hasRole('ADMIN')")
+    public EmployeeDto deleteEmployee(
             @PathVariable Long id
     ) {
         return employeeService.deleteEmployee(id);

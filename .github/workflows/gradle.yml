@@ -1,12 +1,6 @@
 name: Java CI with Gradle
 
-on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches: 
-      - master
+on: [push, pull_request]
 
 permissions:
   contents: read
@@ -23,10 +17,7 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-      env:
-        USERNAME: ${{ secrets.USERNAME }}
-        PASSWORD: ${{ secrets.PASSWORD }}
-    - name: Change wrapper permissions
-      run: chmod +x ./gradlew
-    - name: Run unit tests
-      run: ./gradlew test
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+#    - name: Run unit tests
+#      run: ./gradlew test

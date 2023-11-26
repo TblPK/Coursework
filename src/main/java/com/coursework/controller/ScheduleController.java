@@ -1,12 +1,15 @@
 package com.coursework.controller;
 
 import com.coursework.dto.ScheduleDto;
-import com.coursework.model.Schedule;
+import com.coursework.model.Employee;
 import com.coursework.service.ScheduleService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -18,49 +21,61 @@ public class ScheduleController {
 
     @Operation(summary = "Get all schedules")
     @GetMapping("/")
-    public List<Schedule> getAllSchedules() {
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<ScheduleDto> getAllSchedules() {
         return scheduleService.getAllSchedules();
     }
 
-    @Operation(summary = "Get schedules by employee ID")
-    @GetMapping("/employeeId/{employeeId}")
-    public List<ScheduleDto> getAllSchedulesByEmployeeId(
-            @PathVariable Long employeeId
+    @Operation(summary = "Get schedules in time interval")
+    @GetMapping("/inTimeInterval")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public List<ScheduleDto> getAllSchedulesInTimeIntervalByEmployeeId(
+            @AuthenticationPrincipal Employee employee,
+            @RequestParam(name = "shiftStartedTime") LocalDateTime shiftStartedTime,
+            @RequestParam(name = "shiftEndedTime") LocalDateTime shiftEndedTime
     ) {
-        return scheduleService.getAllSchedulesByEmployeeId(employeeId);
+        return scheduleService.getAllSchedulesInTimeIntervalByEmployeeId(shiftStartedTime, shiftEndedTime, employee.getId());
     }
 
     @Operation(summary = "Get schedules by work location")
-    @GetMapping("/workLocation/{workLocation}")
-    public List<ScheduleDto> getAllSchedulesByWorkLocation(
+    @GetMapping("/{workLocation}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public List<ScheduleDto> getAllSchedulesByWorkLocationAndEmployeeId(
+            @AuthenticationPrincipal Employee employee,
             @PathVariable String workLocation
     ) {
-        return scheduleService.getAllSchedulesByWorkLocation(workLocation);
+        return scheduleService.getAllSchedulesByWorkLocationAndEmployeeId(employee.getId(), workLocation);
     }
 
     @Operation(summary = "Add a new schedule")
     @PostMapping("/")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ScheduleDto addSchedule(
+            @AuthenticationPrincipal Employee employee,
             @RequestBody ScheduleDto scheduleDto
     ) {
-        return scheduleService.addSchedule(scheduleDto);
+        return scheduleService.addSchedule(scheduleDto, employee.getId());
     }
 
     @Operation(summary = "Update a schedule")
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ScheduleDto updateSchedule(
+            @AuthenticationPrincipal Employee employee,
             @PathVariable Long id,
             @RequestBody ScheduleDto scheduleDto
     ) {
-        return scheduleService.updateSchedule(id, scheduleDto);
+        return scheduleService.updateSchedule(id, scheduleDto, employee.getId());
     }
 
     @Operation(summary = "Delete a schedule")
     @DeleteMapping("/{id}")
-    public ScheduleDto deleteSchedule(
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ScheduleDto deleteScheduleByScheduleIdAndEmployeeId(
+            @AuthenticationPrincipal Employee employee,
             @PathVariable Long id
     ) {
-        return scheduleService.deleteSchedule(id);
+        return scheduleService.deleteScheduleByScheduleIdAndEmployeeId(id, employee.getId());
     }
 
 }

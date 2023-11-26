@@ -8,6 +8,7 @@ import com.coursework.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -15,16 +16,15 @@ import java.util.List;
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
-    private final EmployeeService employeeService;
     private final ScheduleMapper scheduleMapper;
 
     /**
      * Retrieves a list of all schedules.
      *
-     * @return List of all schedules as scheduleDto objects.
+     * @return List of all schedules as ScheduleDto objects.
      */
-    public List<Schedule> getAllSchedules() {
-        return scheduleRepository.findAll();
+    public List<ScheduleDto> getAllSchedules() {
+        return scheduleRepository.findAll().stream().map(scheduleMapper::toDto).toList();
     }
 
     /**
@@ -33,10 +33,16 @@ public class ScheduleService {
      * @param employeeId The ID of the employee for whom to retrieve schedules.
      * @return List of schedules for the specified employee.
      */
-    public List<ScheduleDto> getAllSchedulesByEmployeeId(Long employeeId) {
-        employeeService.getEmployeeById(employeeId);
-
-        return scheduleRepository.findAllByEmployee_Id(employeeId).stream().map(scheduleMapper::toDto).toList();
+    public List<ScheduleDto> getAllSchedulesInTimeIntervalByEmployeeId(
+            LocalDateTime shiftStartedTime,
+            LocalDateTime shiftEndedTime,
+            Long employeeId
+    ) {
+        return scheduleRepository.findAllByEmployee_IdAndShiftStartedTimeGreaterThanAndShiftEndedTimeLessThan(
+                employeeId,
+                shiftStartedTime,
+                shiftEndedTime
+        ).stream().map(scheduleMapper::toDto).toList();
     }
 
     /**
@@ -45,8 +51,11 @@ public class ScheduleService {
      * @param workLocation The work location for which to retrieve schedules.
      * @return List of schedules for the specified work location.
      */
-    public List<ScheduleDto> getAllSchedulesByWorkLocation(String workLocation) {
-        return scheduleRepository.findAllByWorkLocation(workLocation).stream().map(scheduleMapper::toDto).toList();
+    public List<ScheduleDto> getAllSchedulesByWorkLocationAndEmployeeId(Long employeeId, String workLocation) {
+        return scheduleRepository.findAllByWorkLocationAndEmployee_Id(
+                workLocation,
+                employeeId
+        ).stream().map(scheduleMapper::toDto).toList();
     }
 
     /**
@@ -55,8 +64,8 @@ public class ScheduleService {
      * @param scheduleDto The schedule to add.
      * @return The added schedule.
      */
-    public ScheduleDto addSchedule(ScheduleDto scheduleDto) {
-        Schedule schedule = scheduleMapper.toEntity(scheduleDto);
+    public ScheduleDto addSchedule(ScheduleDto scheduleDto, Long employeeId) {
+        Schedule schedule = scheduleMapper.toEntity(scheduleDto, employeeId);
 
         return scheduleMapper.toDto(scheduleRepository.save(schedule));
     }
@@ -64,16 +73,16 @@ public class ScheduleService {
     /**
      * Updates an existing schedule.
      *
-     * @param id           The ID of the schedule to update.
+     * @param id          The ID of the schedule to update.
      * @param scheduleDto The updated schedule data.
      * @return The updated schedule.
      * @throws ScheduleNotFoundException if no schedule is found with the given ID.
      */
-    public ScheduleDto updateSchedule(Long id, ScheduleDto scheduleDto) {
-        Schedule schedule = scheduleMapper.toEntity(scheduleDto);
-        scheduleRepository.findById(id).orElseThrow(() ->
+    public ScheduleDto updateSchedule(Long id, ScheduleDto scheduleDto, Long employeeId) {
+        scheduleRepository.findByIdAndEmployeeId(id, employeeId).orElseThrow(() ->
                 new ScheduleNotFoundException("Schedule not found for id: " + id)
         );
+        Schedule schedule = scheduleMapper.toEntity(scheduleDto, employeeId);
 
         return scheduleMapper.toDto(scheduleRepository.save(schedule));
     }
@@ -85,11 +94,11 @@ public class ScheduleService {
      * @return The deleted schedule.
      * @throws ScheduleNotFoundException if no schedule is found with the given ID.
      */
-    public ScheduleDto deleteSchedule(Long id) {
-        Schedule schedule = scheduleRepository.findById(id).orElseThrow(() ->
+    public ScheduleDto deleteScheduleByScheduleIdAndEmployeeId(Long id, Long employeeId) {
+        Schedule schedule = scheduleRepository.findByIdAndEmployeeId(id, employeeId).orElseThrow(() ->
                 new ScheduleNotFoundException("Schedule not found for id: " + id)
         );
-        scheduleRepository.deleteById(id);
+        scheduleRepository.deleteByIdAndEmployeeId(id, employeeId);
 
         return scheduleMapper.toDto(schedule);
     }

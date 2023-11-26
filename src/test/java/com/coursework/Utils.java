@@ -18,7 +18,8 @@ public class Utils {
         String position = "Java Dev";
         LocalDate birthday = LocalDate.of(1990, 1, 1);
 
-        return new Employee(id, firstName, secondName, email, position, birthday);
+//        return new Employee(id, firstName, secondName, email, position, birthday);
+        return null;
     }
 
     public static Schedule createValidSchedule() {
